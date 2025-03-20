@@ -30,7 +30,7 @@ Verify the configuration, using the guide in the *[documentation](https://docs.r
 
 ## Install Kiali (Not Mandatory)
 
-While installing Kiali is not needed for the demo, it is powerful in that it shows both clusters and the traffic flowing automatically between them. Makes it easier to exxplain whats going on. 
+While installing Kiali is not needed for the demo, it is powerful in that it shows both clusters and the traffic flowing automatically between them. Makes it easier to explain whats going on. 
 
 
 ## Simple demo using the standard helloworld demo.
