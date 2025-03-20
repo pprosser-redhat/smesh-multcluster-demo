@@ -450,36 +450,3 @@ spec:
       interval: 1s
       baseEjectionTime: 60s
 ```
-
-## Experiment to use skupper for transport between the meshes 
-
-As far as I can make out (so far), I need to expose to endpoints for the meshes on each cluster. The kubernetes api server, and the east/west gateway service on each cluster.
-
-Because the API server is not using kubernetes services, I can't expose the k8s service of the api server. I need to expose the fully qualified DNS of trhe api server e.g. api.cluster-tqs84.tqs84.sandbox1880.opentlc.com
-
-This means having to use at least one RHEL podman site between clusters.
-
-To expose an API server do the following
-
-```
-skupper expose host api.cluster-tqs84.tqs84.sandbox1880.opentlc.com --port 6443 --target-port 6443 --host-ip 192.168.58.4 --address api-rhsi-aws
-```
-
-if you do not want to expose the api server at the RHEL podman site then leave out the target-ip and target-port e.g.
-
-```
-skupper expose host api.cluster-tqs84.tqs84.sandbox1880.opentlc.com --port 6443 --target-port 6443 --address api-rhsi
-```
-
-expose gcp cluster api 
-
-```
-skupper expose host api.cluster-66vch.66vch.gcp.redhatworkshops.io --port 6443 --target-port 6443  --address api-rhsi-gcp
-```
-
-
-for skupper based api-server try this 
-
-```
-apiserver.openshift-kube-apiserver.svc.cluster.local
-```
