@@ -124,7 +124,7 @@ oc scale deployment helloworld-v1 --replicas=1 -n=sample --context="${CTX_CLUSTE
 
 You should see the test start load balancing the requests again (once hellworld-v1 restarts)
 
-#### Testing out locality failover on the helloworld examples
+#### Locality demo with service failover
 
 Multi Cluster has a concept called locality. It ensures that under normal operation, serivce calls occur within the cluster, calls to the second cluster are only made in the event of service failure in the current cluster.
 
