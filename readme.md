@@ -251,6 +251,40 @@ SUPERHEROES is still work in progress
 
 Deployed a gateway in the superheroes project as per the deploying gateways documentation 
 
+Add configuration required before deploying the gateway
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: secret-reader
+  namespace: superheroes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-reader
+  namespace: superheroes
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name:  secret-reader
+  namespace: superheroes
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-reader
+subjects:
+  - kind: ServiceAccount
+    name:  secret-reader
+```
+
+
 Here's the Gateway Deployment 
 ```
 kind: Deployment
