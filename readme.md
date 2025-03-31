@@ -249,6 +249,20 @@ SUPERHEROES is still work in progress
 
 ### Getting Superheroes to work with Istio
 
+Create the super hereoes project in both clusters 
+
+Make sure you label the clusters 
+
+East Cluster
+```
+oc label namespace superheroes topology.istio.io/network=network1
+```
+
+West Cluster
+```
+oc label namespace superheroes topology.istio.io/network=network2
+```
+
 Deployed a gateway in the superheroes project as per the deploying gateways documentation 
 
 Add configuration required before deploying the gateway
