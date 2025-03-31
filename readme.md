@@ -253,14 +253,9 @@ Create the super hereoes project in both clusters
 
 Make sure you label the clusters 
 
-East Cluster
+Label the projects in both cluster for Istio injection
 ```
-oc label namespace superheroes topology.istio.io/network=network1
-```
-
-West Cluster
-```
-oc label namespace superheroes topology.istio.io/network=network2
+oc label namespace superheroes istio-injection=enabled --context="${CTX_CLUSTER1}"
 ```
 
 Deployed a gateway in the superheroes project as per the deploying gateways documentation 
