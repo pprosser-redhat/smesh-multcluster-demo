@@ -455,16 +455,16 @@ spec:
   http:
   - match:
     - uri:
-        exact: /
-    route:
-    - destination:
-        host: ui-super-heroes.superheroes.svc.cluster.local
-  - match:
-    - uri:
         prefix: /api/fights
     route:
     - destination:
         host: rest-fights.superheroes.svc.cluster.local
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: ui-super-heroes.superheroes.svc.cluster.local
 ```
 
 For locality awareness and failover create the following destination rule 
