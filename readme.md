@@ -467,6 +467,33 @@ spec:
         host: ui-super-heroes.superheroes.svc.cluster.local
 ```
 
+#### Note
+
+To enable the Location microsservice to work correctly the K8s service has to be changed slighly.
+
+rather than :
+
+```
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8089
+```
+
+the port name need to be changed to grpc to allow Istio to perform its magic
+
+```
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 80
+      targetPort: 8089
+```
+
+
+
+
 For locality awareness and failover create the following destination rule 
 
 ```
@@ -493,3 +520,9 @@ spec:
       interval: 1s
       baseEjectionTime: 60s
 ```
+
+# To do 
+
+Need to at least remove stork from the fight service to all istio service discovery.. see here
+
+https://github.com/quarkusio/quarkus-super-heroes/blob/main/rest-fights/README.md#service-discovery-and-client-load-balancing
