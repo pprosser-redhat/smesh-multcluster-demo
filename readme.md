@@ -492,6 +492,19 @@ the port name need to be changed to grpc to allow Istio to perform its magic
 ```
 
 
+To enable, locality to work, you have to switch off the quarkus service discovery feature using stork.
+
+Apply the following to the east cluster 
+
+```
+oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://hero-service","quarkus.rest-client.narration-client.url":"http://narration-service","fight.villain.client-base-url":"http://villain-service"}}' -n superheroes --context="${CTX_CLUSTER1}"
+```
+
+and apply the following to the west cluster
+
+```
+oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://hero-service","quarkus.rest-client.narration-client.url":"http://narration-service","fight.villain.client-base-url":"http://villain-service"}}' -n superheroes --context="${CTX_CLUSTER2}"
+```
 
 
 For locality awareness and failover create the following destination rule 
@@ -520,9 +533,3 @@ spec:
       interval: 1s
       baseEjectionTime: 60s
 ```
-
-# To do 
-
-Need to at least remove stork from the fight service to all istio service discovery.. see here
-
-https://github.com/quarkusio/quarkus-super-heroes/blob/main/rest-fights/README.md#service-discovery-and-client-load-balancing
