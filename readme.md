@@ -506,6 +506,12 @@ and apply the following to the west cluster
 oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://hero-service","quarkus.rest-client.narration-client.url":"http://narration-service","fight.villain.client-base-url":"http://villain-service"}}' -n superheroes --context="${CTX_CLUSTER2}"
 ```
 
+Restart pods in the superheroes project
+
+```
+oc delete pods --all -n superheroes --context="${CTX_CLUSTER1}"
+```
+
 
 For locality awareness and failover create the following destination rule 
 
