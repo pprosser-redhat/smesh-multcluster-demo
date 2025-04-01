@@ -497,13 +497,13 @@ To enable, locality to work, you have to switch off the quarkus service discover
 Apply the following to the east cluster 
 
 ```
-oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://hero-service","quarkus.rest-client.narration-client.url":"http://narration-service","fight.villain.client-base-url":"http://villain-service"}}' -n superheroes --context="${CTX_CLUSTER1}"
+oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://rest-heroes","quarkus.rest-client.narration-client.url":"http://rest-narration","fight.villain.client-base-url":"http://rest-villains"}}' -n superheroes --context="${CTX_CLUSTER1}"
 ```
 
 and apply the following to the west cluster
 
 ```
-oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://hero-service","quarkus.rest-client.narration-client.url":"http://narration-service","fight.villain.client-base-url":"http://villain-service"}}' -n superheroes --context="${CTX_CLUSTER2}"
+oc patch configmap rest-fights-config -p '{"data":{"quarkus.rest-client.hero-client.url":"http://rest-heroes","quarkus.rest-client.narration-client.url":"http://rest-narration","fight.villain.client-base-url":"http://rest-villains"}}' -n superheroes --context="${CTX_CLUSTER2}"
 ```
 
 Restart pods in the superheroes project
@@ -516,20 +516,19 @@ oc delete pods --all -n superheroes --context="${CTX_CLUSTER1}"
 For locality awareness and failover create the following destination rule 
 
 ```
+cat <<EOF | oc --context "${CTX_CLUSTER2}" apply -f -
+---
 kind: DestinationRule
 apiVersion: networking.istio.io/v1
 metadata:
-  name: superheroes-dr
+  name: superheroes-apicurio
   namespace: superheroes
 spec:
-  host: rest-villains.superheroes.svc.cluster.local
+  host: apicurio
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
       localityLbSetting:
-        failover:
-        - from: europe-west4
-          to: us-east-2
         enabled: true
     connectionPool:
       http:
@@ -538,4 +537,264 @@ spec:
       consecutive5xxErrors: 1
       interval: 1s
       baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-event-statistics
+  namespace: superheroes
+spec:
+  host: event-statistics
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-fights-db
+  namespace: superheroes
+spec:
+  host: fights-db
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-fights-kafka
+  namespace: superheroes
+spec:
+  host: fights-kafka
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-grpc-locations
+  namespace: superheroes
+spec:
+  host: grpc-locations
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-heroes-db
+  namespace: superheroes
+spec:
+  host: heroes-db
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-locations-db
+  namespace: superheroes
+spec:
+  host: locations-db
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-rest-fights
+  namespace: superheroes
+spec:
+  host: rest-fights
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-rest-heroes
+  namespace: superheroes
+spec:
+  host: rest-heroes
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-rest-narration
+  namespace: superheroes
+spec:
+  host: rest-narration
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-rest-villains
+  namespace: superheroes
+spec:
+  host: rest-villains
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-superheroes-gw
+  namespace: superheroes
+spec:
+  host: superheroes-gw
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-ui-super-heroes
+  namespace: superheroes
+spec:
+  host: ui-super-heroes
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1
+metadata:
+  name: superheroes-villains-db
+  namespace: superheroes
+spec:
+  host: villains-db
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 60s
+EOF
 ```
