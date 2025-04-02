@@ -1,11 +1,20 @@
 # Multi Primary, Multi Network Istio demon 
 ## Configuration Notes
 
-**Kaili not added yet, I will add this hopefully**
 
 **Note:** Need to make sure the OpenShift clusters are confirgured with Load Balancers, istio discovers the IP of the east west gateway in the other cluster so the k8s service is defined as loadbalancer
 
 **Note:** The easiest way to ensure this demo works is to deploy the clusters into different regions. 
+
+#### Install the Operators
+
+Operators required in both clusters
+
+- Red Hat OpenShift Service Mesh 3
+- Tempo Operator
+- Red Hat Build of OpenTelemetry 
+- Kiali Operator
+- cert-manger (if doing connectivity link)
 
 Followed the *[install documentation](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.0/html/installing/ossm-multi-cluster-topologies#ossm-multi-cluster-configuration-overview_ossm-multi-cluster-topologies)* to create the meshes and setup the east west gateways. 
 
@@ -22,15 +31,56 @@ spec:
   namespace: istio-cni
   version: 1.24.3
 ```
+or for faster installation, use the scripts.
+
+There are 2 scripts, one for east and west clusters.
+
+For basic installation,
+
+cd Eest_Cluster and run
+```
+./install_ossm3_demo.sh
+```
+
+cd West_Cluster and run
+```
+./install_ossm3_demo.sh
+```
+Before running the scripts do the following 
+
+```
+oc login -u https://<east_cluster_api_server_url>
+```
+```
+export CTX_CLUSTER1=$(oc config current-context)
+```
+```
+oc login -u https://<west_cluster_api_server_url>
+```
+```
+export CTX_CLUSTER2=$(oc config current-context)
+```
+now, run 
+
+```
+./deploy_east_west_configuration.sh
+```
+
 
 
 Verify the configuration, using the guide in the *[documentation](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.0/html/installing/ossm-multi-cluster-topologies#ossm-verifying-multi-cluster-topology_ossm-multi-cluster-topologies)*
 
 **Note:** V1 of helloworld is deployed on the east cluster (cluster 1) and V2 of the helloworld is deployed on the west cluster (cluster 2).
 
-## Install Kiali (Not Mandatory)
+## Install Monitor (Not Mandatory)
 
-While installing Kiali is not needed for the demo, it is powerful in that it shows both clusters and the traffic flowing automatically between them. Makes it easier to explain whats going on. 
+While installing the monitoring stackis not needed for the demo, it is powerful in that it shows both clusters and the traffic flowing automatically between them. Makes it easier to explain whats going on. 
+
+The docs instructions can be used to create the monitoring stack. For ease, I modifed the Soltion Pattern "Optimizing Traffic and Observability with OpenShift Service Mesh 3" install script just to do the monitoing stack 
+
+```
+
+```
 
 
 ## Simple demo using the standard helloworld demo.
@@ -797,4 +847,49 @@ spec:
       interval: 1s
       baseEjectionTime: 60s
 EOF
+```
+### Tracing 
+
+Install the Tempo operator in both clusters
+
+Install the Red Hat build of OpenTelemetry operator in both clusters
+
+Creeate project called "tempo" in both clusters
+
+Setup s3 bucket and create secret 
+
+```
+kind: Secret
+apiVersion: v1
+metadata:
+  name: s3-test
+  namespace: tempo
+stringData:
+  access_key_id: <AWS_Key>
+  access_key_secret: <AWS secret key>
+  bucket: <bucketname>
+  endpoint: https://s3.eu-west-1.amazonaws.com
+type: Opaque
+```
+Merge the following in to tracing for Kiali 
+
+s3://philtempo1/test/
+https://philtempo1.s3.eu-west-1.amazonaws.com/test/
+```
+spec:
+  external_services:
+    tracing:
+      enabled: true 
+      provider: tempo 
+      use_grpc: false
+      internal_url: https://tempo-sample-query-frontend.tempo.svc.cluster.local:3200/api/traces/v1/default/tempo 
+      external_url: https://tempo-sample-query-frontend-tempo.apps.cluster-zpfc2.zpfc2.sandbox1030.opentlc.com/api/traces/v1/default/search 
+      health_check_url: https://tempo-sample-query-frontend-tempo.apps.cluster-zpfc2.zpfc2.sandbox1030.opentlc.com/api/traces/v1/north/tempo/api/echo 
+      auth: 
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+        insecure_skip_verify: false
+        type: bearer
+        use_kiali_token: true
+      tempo_config:
+         url_format: "jaeger" 
 ```
