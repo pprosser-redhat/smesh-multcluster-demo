@@ -39,11 +39,13 @@ For basic installation,
 
 cd Eest_Cluster and run
 ```
+oc login -u https://<east_cluster_api_server_url>
 ./install_ossm3_demo.sh
 ```
 
 cd West_Cluster and run
 ```
+oc login -u https://<west_cluster_api_server_url>
 ./install_ossm3_demo.sh
 ```
 Before running the scripts do the following 
