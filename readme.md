@@ -66,7 +66,7 @@ now, run
 ./deploy_east_west_configuration.sh
 ```
 
-
+Before verifying the configuration, make sure a podmonitor is added to the applications namespace e.g. sample, and superhereoes
 
 Verify the configuration, using the guide in the *[documentation](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.0/html/installing/ossm-multi-cluster-topologies#ossm-verifying-multi-cluster-topology_ossm-multi-cluster-topologies)*
 
@@ -76,12 +76,7 @@ Verify the configuration, using the guide in the *[documentation](https://docs.r
 
 While installing the monitoring stackis not needed for the demo, it is powerful in that it shows both clusters and the traffic flowing automatically between them. Makes it easier to explain whats going on. 
 
-The docs instructions can be used to create the monitoring stack. For ease, I modifed the Soltion Pattern "Optimizing Traffic and Observability with OpenShift Service Mesh 3" install script just to do the monitoing stack 
-
-```
-
-```
-
+Monitoring is installed as part of the automatic script
 
 ## Simple demo using the standard helloworld demo.
 
