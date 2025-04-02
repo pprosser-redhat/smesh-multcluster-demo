@@ -37,7 +37,7 @@ There are 2 scripts, one for east and west clusters.
 
 For basic installation,
 
-cd Eest_Cluster and run
+cd East_Cluster and run
 ```
 oc login -u https://<east_cluster_api_server_url>
 ./install_ossm3_demo.sh
