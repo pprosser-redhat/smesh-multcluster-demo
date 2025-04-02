@@ -298,11 +298,30 @@ SUPERHEROES is still work in progress
 
 Create the super hereoes project in both clusters 
 
+```
+oc new-project superheroes --context="${CTX_CLUSTER1}"
+```
+```
+oc new-project superheroes --context="${CTX_CLUSTER2}"
+```
+
 Make sure you label the clusters 
 
 Label the projects in both cluster for Istio injection
 ```
 oc label namespace superheroes istio-injection=enabled --context="${CTX_CLUSTER1}"
+```
+```
+oc label namespace superheroes istio-injection=enabled --context="${CTX_CLUSTER2}"
+```
+
+Make sure you create the podmonitor in each project 
+
+```
+oc apply --context="${CTX_CLUSTER2} -f ./East_Cluster/resources/Monitoring/podMonitor.yaml
+```
+```
+oc apply --context="${CTX_CLUSTER2} -f ./West_Cluster/resources/Monitoring/podMonitor.yaml
 ```
 
 Deployed a gateway in the superheroes project as per the deploying gateways documentation 
