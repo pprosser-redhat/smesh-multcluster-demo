@@ -318,10 +318,10 @@ oc label namespace superheroes istio-injection=enabled --context="${CTX_CLUSTER2
 Make sure you create the podmonitor in each project 
 
 ```
-oc apply --context="${CTX_CLUSTER1} -f ./East_Cluster/resources/Monitoring/podMonitor.yaml
+oc apply --context="${CTX_CLUSTER1}" -f ./East_Cluster/resources/Monitoring/podMonitor.yaml
 ```
 ```
-oc apply --context="${CTX_CLUSTER2} -f ./West_Cluster/resources/Monitoring/podMonitor.yaml
+oc apply --context="${CTX_CLUSTER2}" -f ./West_Cluster/resources/Monitoring/podMonitor.yaml
 ```
 
 Deployed a gateway in the superheroes project as per the deploying gateways documentation 
