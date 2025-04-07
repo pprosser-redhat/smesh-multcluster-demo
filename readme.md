@@ -65,7 +65,7 @@ export CTX_CLUSTER2=$(oc config current-context)
 now, run 
 
 ```
-./deploy_east_west_configuration.sh
+./deploy_remote_secrets.sh
 ```
 
 Before verifying the configuration, make sure a podmonitor is added to the applications namespace e.g. sample, and superhereoes
