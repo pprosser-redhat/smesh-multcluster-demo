@@ -1,0 +1,21 @@
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: default
+spec:
+  namespace: istio-system
+  updateStrategy:
+    type: InPlace
+  values:
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: cluster1
+      network: network1
+    meshConfig:
+      extensionProviders:
+      - name: otel
+        opentelemetry:
+          port: 4317
+          service: otel-collector.opentelemetrycollector.svc.cluster.local
+  version: v1.24.3

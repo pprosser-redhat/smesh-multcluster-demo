@@ -70,6 +70,10 @@ now, run
 
 Before verifying the configuration, make sure a podmonitor is added to the applications namespace e.g. sample, and superhereoes
 
+Use the podmonitor already depoyed to the istio-system namespace.
+
+
+
 Verify the configuration, using the guide in the *[documentation](https://docs.redhat.com/en/documentation/red_hat_openshift_service_mesh/3.0/html/installing/ossm-multi-cluster-topologies#ossm-verifying-multi-cluster-topology_ossm-multi-cluster-topologies)*
 
 **Note:** V1 of helloworld is deployed on the east cluster (cluster 1) and V2 of the helloworld is deployed on the west cluster (cluster 2).
